@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { api } from "../services/api";
+import { api2 } from "../services/api2";
 import {
   Eye,
   Edit,
@@ -42,7 +42,7 @@ const CredentialList = () => {
   const loadCredentials = async () => {
     try {
       setLoading(true);
-      const data = await api.getCredentials();
+      const data = await api2.getCredentials();
       setCredentials(data);
       setFilteredCredentials(data);
     } catch (err) {
@@ -67,7 +67,7 @@ const CredentialList = () => {
   const handleDelete = async (id, serviceName) => {
     if (window.confirm(`¿Estás seguro de eliminar ${serviceName}?`)) {
       try {
-        await api.deleteCredential(id);
+        await api2.deleteCredential(id);
         await loadCredentials();
         toast.success("Credencial eliminada correctamente");
       } catch (err) {
@@ -130,7 +130,7 @@ const CredentialList = () => {
                 <Key size={16} />
               </ThemeButton>
               <GreetingText>Hola, {user.name}</GreetingText>
-              <NewCredentialLink to="/crear">
+              <NewCredentialLink to="/credentials">
                 <Plus size={20} />
                 Nueva Credencial
               </NewCredentialLink>
@@ -189,18 +189,18 @@ const CredentialList = () => {
           transition={{ delay: 0.3 }}
         >
           <AnimatePresence>
-            {filteredCredentials.map((cred) => (
+            {filteredCredentials.map((cred, index) => (
               <CredentialCard
-                key={cred.id}
+                key={index}
                 variants={itemVariants}
                 exit={{ opacity: 0, scale: 0.9 }}
                 whileHover={{ y: -5 }}
               >
                 <CredentialHeader>
-                  <ServiceName>{cred.serviceName}</ServiceName>
+                  <ServiceName>{cred.service_name}</ServiceName>
                   <DateBadge>
                     <Clock size={12} style={{ marginRight: "4px" }} />
-                    {formatDate(cred.lastUpdated)}
+                    {formatDate(cred.updated_at)}
                   </DateBadge>
                 </CredentialHeader>
 

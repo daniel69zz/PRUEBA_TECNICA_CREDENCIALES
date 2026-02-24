@@ -22,7 +22,7 @@ function AppRoutes() {
           }
         />
         <Route
-          path="/crear"
+          path="/credentials"
           element={
             <PrivateRoute>
               <CredentialForm />

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { api } from "../services/api";
+import { api2 } from "../services/api2";
 import { Save, ArrowLeft, Eye, EyeOff, AlertCircle } from "lucide-react";
 import LoadingSkeleton from "./LoadingSkeleton";
 import {
@@ -10,8 +10,6 @@ import {
 } from "../utils/validation";
 import toast from "react-hot-toast";
 import styled, { css } from "styled-components";
-
-// ─── Component ────────────────────────────────────────────────────────────────
 
 function CredentialForm() {
   const { id } = useParams();
@@ -38,7 +36,7 @@ function CredentialForm() {
   const loadCredential = async () => {
     try {
       setLoading(true);
-      const data = await api.getCredentialById(id);
+      const data = await api2.getCredentialById(id);
       setFormData({
         serviceName: data.serviceName || "",
         accountUsername: data.accountUsername || "",
@@ -88,13 +86,16 @@ function CredentialForm() {
     try {
       setLoading(true);
       if (isEditing) {
-        await api.updateCredential(id, formData);
+        await api2.updateCredential(id, formData);
+        toast.success("Credencial actualizada");
       } else {
-        await api.createCredential(formData);
+        await api2.createCredential(formData);
+        toast.success("Credencial creada");
       }
       navigate("/");
     } catch (err) {
       setError(`Error al ${isEditing ? "actualizar" : "crear"} la credencial`);
+      toast.error("Ocurrió un error inesperado");
     } finally {
       setLoading(false);
     }
@@ -116,12 +117,17 @@ function CredentialForm() {
           </PageTitle>
         </CardHeader>
 
-        {error && <ErrorMessage>{error}</ErrorMessage>}
+        {error && (
+          <ErrorMessage>
+            <AlertCircle size={16} />
+            {error}
+          </ErrorMessage>
+        )}
 
         <form onSubmit={handleSubmit}>
           {/* Servicio */}
           <FormGroup>
-            <label htmlFor="serviceName">Servicio *</label>
+            <Label htmlFor="serviceName">Servicio *</Label>
             <Input
               type="text"
               id="serviceName"
@@ -147,9 +153,9 @@ function CredentialForm() {
 
           {/* Usuario */}
           <FormGroup>
-            <label htmlFor="accountUsername">
+            <Label htmlFor="accountUsername">
               Usuario/Email del servicio *
-            </label>
+            </Label>
             <Input
               type="text"
               id="accountUsername"
@@ -177,7 +183,7 @@ function CredentialForm() {
 
           {/* Contraseña */}
           <FormGroup>
-            <label htmlFor="password">Contraseña *</label>
+            <Label htmlFor="password">Contraseña *</Label>
             <PasswordInputWrapper>
               <PasswordInput
                 type={showPassword ? "text" : "password"}
@@ -229,7 +235,7 @@ function CredentialForm() {
 
           {/* URL */}
           <FormGroup>
-            <label htmlFor="url">URL (opcional)</label>
+            <Label htmlFor="url">URL (opcional)</Label>
             <Input
               type="url"
               id="url"
@@ -253,7 +259,7 @@ function CredentialForm() {
 
           {/* Notas */}
           <FormGroup>
-            <label htmlFor="notes">Notas (opcional)</label>
+            <Label htmlFor="notes">Notas (opcional)</Label>
             <Textarea
               id="notes"
               name="notes"
@@ -276,6 +282,9 @@ function CredentialForm() {
           </FormGroup>
 
           <ButtonGroup>
+            <CancelButton type="button" onClick={() => navigate("/")}>
+              Cancelar
+            </CancelButton>
             <SubmitButton type="submit" disabled={loading}>
               <Save size={16} />
               {loading ? "Guardando..." : isEditing ? "Actualizar" : "Guardar"}
@@ -287,7 +296,7 @@ function CredentialForm() {
   );
 }
 
-// ─── Styled Components ───────────────────────────────────────────────────────
+// ─── Styled Components ────────────────────────────────────────────────────────
 
 const FormContainer = styled.div`
   max-width: 600px;
@@ -296,10 +305,11 @@ const FormContainer = styled.div`
 `;
 
 const Card = styled.div`
-  background: white;
-  border-radius: 12px;
+  background: #ffffff;
+  border-radius: 1rem;
   padding: 2rem;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f3f4f6;
 `;
 
 const CardHeader = styled.div`
@@ -310,19 +320,20 @@ const CardHeader = styled.div`
 `;
 
 const PageTitle = styled.h1`
-  color: var(--dark);
+  color: #1f2937;
   margin: 0;
   font-size: 1.5rem;
+  font-weight: 700;
 `;
 
 const BackButton = styled.button`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: var(--gray);
-  color: white;
+  background: #6b7280;
+  color: #ffffff;
   border: none;
-  border-radius: 8px;
+  border-radius: 0.5rem;
   padding: 0.5rem 1rem;
   cursor: pointer;
   transition: opacity 0.2s;
@@ -333,10 +344,13 @@ const BackButton = styled.button`
 `;
 
 const ErrorMessage = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   background: #fee2e2;
   color: #dc2626;
   border: 1px solid #fca5a5;
-  border-radius: 8px;
+  border-radius: 0.5rem;
   padding: 0.75rem 1rem;
   margin-bottom: 1.5rem;
   font-size: 0.875rem;
@@ -347,22 +361,22 @@ const FormGroup = styled.div`
   flex-direction: column;
   gap: 0.4rem;
   margin-bottom: 1.25rem;
+`;
 
-  label {
-    font-weight: 600;
-    font-size: 0.875rem;
-    color: var(--dark);
-  }
+const Label = styled.label`
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #1f2937;
 `;
 
 const inputBase = css`
   width: 100%;
   padding: 0.6rem 0.85rem;
-  border: 1.5px solid #d1d5db;
-  border-radius: 8px;
+  border: 1.5px solid ${({ $hasError }) => ($hasError ? "#dc2626" : "#d1d5db")};
+  border-radius: 0.5rem;
   font-size: 0.95rem;
-  color: var(--dark);
-  background: white;
+  color: #1f2937;
+  background: #ffffff;
   transition:
     border-color 0.2s,
     box-shadow 0.2s;
@@ -374,8 +388,10 @@ const inputBase = css`
 
   &:focus {
     outline: none;
-    border-color: var(--primary, #6366f1);
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+    border-color: ${({ $hasError }) => ($hasError ? "#dc2626" : "#8b5cf6")};
+    box-shadow: 0 0 0 3px
+      ${({ $hasError }) =>
+        $hasError ? "rgba(220, 38, 38, 0.15)" : "rgba(139, 92, 246, 0.15)"};
   }
 
   &:disabled {
@@ -384,15 +400,13 @@ const inputBase = css`
     opacity: 0.7;
   }
 
-  ${({ $hasError }) =>
-    $hasError &&
-    css`
-      border-color: #dc2626;
-      &:focus {
-        border-color: #dc2626;
-        box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
-      }
-    `}
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover,
+  &:-webkit-autofill:focus {
+    -webkit-text-fill-color: #1f2937;
+    -webkit-box-shadow: 0 0 0px 1000px #ffffff inset;
+    transition: background-color 5000s ease-in-out 0s;
+  }
 `;
 
 const Input = styled.input`
@@ -439,7 +453,7 @@ const PasswordToggle = styled.button`
   transition: color 0.2s;
 
   &:hover {
-    color: var(--dark);
+    color: #1f2937;
   }
 `;
 
@@ -480,7 +494,27 @@ const StrengthText = styled.span`
 const ButtonGroup = styled.div`
   display: flex;
   justify-content: flex-end;
+  gap: 0.75rem;
   margin-top: 1.75rem;
+`;
+
+const CancelButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.5rem;
+  background: #f3f4f6;
+  color: #374151;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover {
+    background: #e5e7eb;
+  }
 `;
 
 const SubmitButton = styled.button`
@@ -489,10 +523,10 @@ const SubmitButton = styled.button`
   gap: 0.5rem;
   min-width: 120px;
   justify-content: center;
-  background: var(--primary, #6366f1);
-  color: white;
+  background: linear-gradient(135deg, #8b5cf6, #ec4899);
+  color: #ffffff;
   border: none;
-  border-radius: 8px;
+  border-radius: 0.5rem;
   padding: 0.65rem 1.5rem;
   font-size: 0.95rem;
   font-weight: 600;
@@ -500,6 +534,7 @@ const SubmitButton = styled.button`
   transition:
     opacity 0.2s,
     transform 0.1s;
+  box-shadow: 0 4px 6px -1px rgba(139, 92, 246, 0.4);
 
   &:hover:not(:disabled) {
     opacity: 0.9;

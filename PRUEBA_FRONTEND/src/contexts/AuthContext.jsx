@@ -1,11 +1,13 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext } from "react";
 
 const AuthContext = createContext();
+
+const API_URL = "http://localhost:3000";
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth debe usarse dentro de AuthProvider');
+    throw new Error("useAuth debe usarse dentro de AuthProvider");
   }
   return context;
 };
@@ -13,73 +15,35 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [users, setUsers] = useState(() => {
-    // Load users from localStorage or initialize with demo user
-    const storedUsers = localStorage.getItem('users');
-    if (storedUsers) {
-      return JSON.parse(storedUsers);
-    }
-    // Initialize with demo user
-    const demoUsers = [
-      { id: 1, email: 'demo@example.com', name: 'Usuario Demo', password: '123456' }
-    ];
-    localStorage.setItem('users', JSON.stringify(demoUsers));
-    return demoUsers;
-  });
 
+  // LOGIN
   const login = async (email, password) => {
     setLoading(true);
     try {
-      // Simulación de llamada a API
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Buscar usuario en el "localStorage"
-      const foundUser = users.find(u => u.email === email.toLowerCase() && u.password === password);
-      
-      if (foundUser) {
-        const userData = { 
-          id: foundUser.id,
-          email: foundUser.email, 
-          name: foundUser.name 
-        };
-        setUser(userData);
-        localStorage.setItem('user', JSON.stringify(userData));
-        return { success: true };
-      } else {
-        throw new Error('Email o contraseña incorrectos');
-      }
-    } catch (error) {
-      return { success: false, error: error.message };
-    } finally {
-      setLoading(false);
-    }
-  };
+      const response = await fetch(`${API_URL}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-  const register = async (userData) => {
-    setLoading(true);
-    try {
-      // Simulación de llamada a API
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Verificar si el email ya existe
-      const existingUser = users.find(u => u.email === userData.email);
-      if (existingUser) {
-        throw new Error('El email ya está registrado');
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Error al iniciar sesión");
       }
-      
-      // Crear nuevo usuario
-      const newUser = {
-        id: Date.now(),
-        email: userData.email,
-        name: userData.name,
-        password: userData.password
+
+      localStorage.setItem("token", data.token);
+
+      // Decodifica el token para obtener el id_user
+      const payload = JSON.parse(atob(data.token.split(".")[1]));
+      const userData = {
+        id_user: payload.id_user,
+        email: email,
       };
-      
-      // Guardar en localStorage
-      const updatedUsers = [...users, newUser];
-      setUsers(updatedUsers);
-      localStorage.setItem('users', JSON.stringify(updatedUsers));
-      
+
+      setUser(userData);
+      localStorage.setItem("user", JSON.stringify(userData));
+
       return { success: true };
     } catch (error) {
       return { success: false, error: error.message };
@@ -88,15 +52,46 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // REGISTER —
+  const register = async (userData) => {
+    setLoading(true);
+    try {
+      const response = await fetch(`${API_URL}/auth/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: userData.email,
+          password: userData.password,
+          // ← name no se envía
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Error al registrarse");
+      }
+
+      return { success: true };
+    } catch (error) {
+      return { success: false, error: error.message };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // LOGOUT — limpia el token y el usuario
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('user');
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
   };
 
   // Verificar si hay usuario en localStorage al iniciar
   React.useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
+    const storedUser = localStorage.getItem("user");
+    const storedToken = localStorage.getItem("token");
+    if (storedUser && storedToken) {
       setUser(JSON.parse(storedUser));
     }
   }, []);
@@ -106,7 +101,7 @@ export const AuthProvider = ({ children }) => {
     login,
     register,
     logout,
-    loading
+    loading,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
