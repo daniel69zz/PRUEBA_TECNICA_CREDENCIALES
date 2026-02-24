@@ -229,21 +229,23 @@ const CredentialList = () => {
 
                 <ActionsRow>
                   <ActionLink
-                    to={`/detalle/${cred.id}`}
+                    to={`/credentials/${cred.id_credential}`}
                     $variant="view"
                     data-tooltip="Ver detalles"
                   >
                     <Eye size={18} />
                   </ActionLink>
                   <ActionLink
-                    to={`/editar/${cred.id}`}
+                    to={`/credentials/${cred.id_credential}`}
                     $variant="edit"
                     data-tooltip="Editar"
                   >
                     <Edit size={18} />
                   </ActionLink>
                   <ActionButton
-                    onClick={() => handleDelete(cred.id, cred.serviceName)}
+                    onClick={() =>
+                      handleDelete(cred.id_credential, cred.service_name)
+                    }
                     $variant="delete"
                     data-tooltip="Eliminar"
                   >

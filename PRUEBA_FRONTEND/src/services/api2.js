@@ -50,6 +50,7 @@ export const api2 = {
       },
       body: JSON.stringify({
         service_name: formData.serviceName,
+        account_username: formData.accountUsername,
         password: formData.password || undefined,
         url: formData.url || null,
         notes: formData.notes || null,

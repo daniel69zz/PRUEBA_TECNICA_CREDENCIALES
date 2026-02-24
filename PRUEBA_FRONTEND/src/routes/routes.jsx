@@ -30,7 +30,7 @@ function AppRoutes() {
           }
         />
         <Route
-          path="/editar/:id"
+          path="/credentials/:id"
           element={
             <PrivateRoute>
               <CredentialForm />
@@ -38,7 +38,7 @@ function AppRoutes() {
           }
         />
         <Route
-          path="/detalle/:id"
+          path="/credentials/:id"
           element={
             <PrivateRoute>
               <CredentialDetail />

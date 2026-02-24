@@ -125,7 +125,6 @@ function CredentialForm() {
         )}
 
         <form onSubmit={handleSubmit}>
-          {/* Servicio */}
           <FormGroup>
             <Label htmlFor="serviceName">Servicio *</Label>
             <Input
