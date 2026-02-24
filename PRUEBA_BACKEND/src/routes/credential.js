@@ -5,7 +5,7 @@ const { encrypt, decrypt } = require("../encryption");
 
 router.use(auth_middleware);
 
-// GET /credentials FUNCIONA
+// GET /credentials FUNCIONA DEVUELVE TODOS LOS CREDENCIALES SEGUN EL TOKEN AUTH
 router.get("/", async (req, res) => {
   try {
     const result = await pool.query(
@@ -27,7 +27,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// POST /credentials FUNCIONA
+// POST /credentials FUNCIONA CREA NUEVOS CREDENCIALES DE X SITIO
 router.post("/", async (req, res) => {
   try {
     const { service_name, password, url, notes } = req.body;
@@ -50,7 +50,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-//GET /credentials/:id FUNCIONA
+//GET /credentials/:id FUNCIONA OBTIENE CREDENTIAL SEGUN ID
 router.get("/:id", async (req, res) => {
   try {
     const result = await pool.query(
@@ -75,7 +75,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-//PUT /credentials/:id
+//PUT /credentials/:id FUNCIONA
 router.put("/:id", async (req, res) => {
   try {
     const { service_name, password, url, notes } = req.body;
@@ -115,7 +115,7 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-//DELETE /credentials/:id
+//DELETE /credentials/:id FUNCIONA
 router.delete("/:id", async (req, res) => {
   try {
     const result = await pool.query(
@@ -136,7 +136,6 @@ router.delete("/:id", async (req, res) => {
 });
 
 //GET /credentials/:id/password
-
 router.get("/:id/password", async (req, res) => {
   try {
     const result = await pool.query(
@@ -152,7 +151,6 @@ router.get("/:id/password", async (req, res) => {
 
     const decryptedPassword = decrypt(result.rows[0].password_encrypted);
 
-    // Registrar auditoría
     await pool.query(
       `INSERT INTO AUDIT_LOGS
        (id_user, action, created_at, metadata)
