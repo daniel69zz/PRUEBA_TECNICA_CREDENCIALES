@@ -5,7 +5,7 @@ const { encrypt, decrypt } = require("../encryption");
 
 router.use(auth_middleware);
 
-// GET /credentials
+// GET /credentials FUNCIONA
 router.get("/", async (req, res) => {
   try {
     const result = await pool.query(
@@ -22,11 +22,12 @@ router.get("/", async (req, res) => {
 
     res.json(result.rows);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: "Error al obtener credenciales" });
   }
 });
 
-// POST /credentials
+// POST /credentials FUNCIONA
 router.post("/", async (req, res) => {
   try {
     const { service_name, password, url, notes } = req.body;
@@ -43,11 +44,13 @@ router.post("/", async (req, res) => {
 
     res.status(201).json(result.rows[0]);
   } catch (error) {
+    console.error(error);
+
     res.status(500).json({ error: "Error al crear credencial" });
   }
 });
 
-//GET /credentials/:id
+//GET /credentials/:id FUNCIONA
 router.get("/:id", async (req, res) => {
   try {
     const result = await pool.query(
