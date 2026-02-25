@@ -54,6 +54,8 @@ El proyecto utiliza **PostgreSQL** con 3 tablas principales:
 | `CREDENTIALS` | Credenciales cifradas por usuario |
 | `AUDIT_LOGS` | Registro de acciones sensibles |
 
+El fichero .sql para la creación de la base de datos esta en la raíz del repositorio.
+
 ---
 
 ## ⚙️ Instalación
@@ -77,7 +79,7 @@ cd PRUEBA_BACKEND
 npm install
 ```
 
-3. Ejecuta las migraciones SQL en tu base de datos PostgreSQL:
+3. Ejecuta las migraciones SQL en tu base de datos PostgreSQL (dado que no puedas acceder al fichero .sql):
 ```sql
 CREATE TABLE AUDIT_LOGS (
     id_audit serial  NOT NULL,
@@ -117,7 +119,12 @@ ALTER TABLE CREDENTIALS ADD CONSTRAINT CREDENTIALS_USERS
 ;
 ```
 
-5. Inicia el servidor:
+5. Configuración de variables de entorno
+
+Renombrar el archivo `.env.clear` a `.env`.
+Editar el archivo `.env` y completar las variables necesarias con las credenciales de su entorno local (base de datos, puerto, etc.).
+
+6. Inicia el servidor:
 ```bash
 node server.js
 ```
