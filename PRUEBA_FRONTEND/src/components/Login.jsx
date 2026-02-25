@@ -59,7 +59,7 @@ function Login() {
           >
             <img src={logo} alt="logo" />
           </IconWrapper>
-          <h1>TECNOVISION</h1>
+          <h1>Credentials Manager</h1>
           <p>Tu agenda segura de contraseñas</p>
         </Header>
 
