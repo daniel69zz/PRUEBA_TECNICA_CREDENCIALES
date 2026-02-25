@@ -179,7 +179,6 @@ function CredentialForm() {
             )}
           </FormGroup>
 
-          {/* Contraseña */}
           <FormGroup>
             <Label htmlFor="password">Contraseña *</Label>
             <PasswordInputWrapper>
@@ -231,7 +230,6 @@ function CredentialForm() {
             )}
           </FormGroup>
 
-          {/* URL */}
           <FormGroup>
             <Label htmlFor="url">URL (opcional)</Label>
             <Input
@@ -255,7 +253,6 @@ function CredentialForm() {
             )}
           </FormGroup>
 
-          {/* Notas */}
           <FormGroup>
             <Label htmlFor="notes">Notas (opcional)</Label>
             <Textarea
@@ -426,8 +423,6 @@ const FieldError = styled.div`
   margin-top: 0.15rem;
 `;
 
-// ─── Password ─────────────────────────────────────────────────────────────────
-
 const PasswordInputWrapper = styled.div`
   position: relative;
   display: flex;
@@ -486,8 +481,6 @@ const StrengthText = styled.span`
   color: ${({ $color }) => $color};
   white-space: nowrap;
 `;
-
-// ─── Button Group ─────────────────────────────────────────────────────────────
 
 const ButtonGroup = styled.div`
   display: flex;

@@ -1,5 +1,5 @@
-import React from 'react';
-import { AlertTriangle, RefreshCw } from 'lucide-react';
+import React from "react";
+import { AlertTriangle, RefreshCw } from "lucide-react";
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -14,11 +14,10 @@ class ErrorBoundary extends React.Component {
   componentDidCatch(error, errorInfo) {
     this.setState({
       error: error,
-      errorInfo: errorInfo
+      errorInfo: errorInfo,
     });
-    
-    // Log error to monitoring service in production
-    console.error('Error caught by boundary:', error, errorInfo);
+
+    console.error("Error caught by boundary:", error, errorInfo);
   }
 
   handleRetry = () => {
@@ -35,17 +34,17 @@ class ErrorBoundary extends React.Component {
             <p>
               Ha ocurrido un error inesperado. Por favor, intenta nuevamente.
             </p>
-            {process.env.NODE_ENV === 'development' && (
+            {process.env.NODE_ENV === "development" && (
               <details className="error-details">
                 <summary>Detalles del error (desarrollo)</summary>
                 <pre>{this.state.error && this.state.error.toString()}</pre>
                 <pre>{this.state.errorInfo.componentStack}</pre>
               </details>
             )}
-            <button 
+            <button
               onClick={this.handleRetry}
               className="btn btn-primary"
-              style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+              style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
             >
               <RefreshCw size={16} />
               Reintentar

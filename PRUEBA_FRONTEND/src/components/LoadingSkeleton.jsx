@@ -1,6 +1,4 @@
-import React from 'react';
-
-const LoadingSkeleton = ({ type = 'card', count = 1 }) => {
+function LoadingSkeleton({ type = "card", count = 1 }) {
   const renderCardSkeleton = () => (
     <div className="skeleton-card">
       <div className="skeleton-header">
@@ -52,11 +50,11 @@ const LoadingSkeleton = ({ type = 'card', count = 1 }) => {
 
   const skeletons = [];
   for (let i = 0; i < count; i++) {
-    if (type === 'card') {
+    if (type === "card") {
       skeletons.push(renderCardSkeleton());
-    } else if (type === 'form') {
+    } else if (type === "form") {
       skeletons.push(renderFormSkeleton());
-    } else if (type === 'list') {
+    } else if (type === "list") {
       return renderListSkeleton();
     }
   }
@@ -68,6 +66,6 @@ const LoadingSkeleton = ({ type = 'card', count = 1 }) => {
       ))}
     </div>
   );
-};
+}
 
 export default LoadingSkeleton;

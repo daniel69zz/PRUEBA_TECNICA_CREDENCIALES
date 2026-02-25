@@ -13,7 +13,6 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-  // ✅ CAMBIO: inicializa leyendo localStorage directamente
   const [user, setUser] = useState(() => {
     const storedUser = localStorage.getItem("user");
     const storedToken = localStorage.getItem("token");
@@ -90,8 +89,6 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
   };
-
-  // ✅ useEffect eliminado, ya no hace falta
 
   const value = {
     user,

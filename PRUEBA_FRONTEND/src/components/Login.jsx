@@ -57,7 +57,6 @@ function Login() {
             animate={{ scale: 1 }}
             transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
           >
-            {/* <Key size={64} color="#8b5cf6" /> */}
             <img src={logo} alt="logo" />
           </IconWrapper>
           <h1>TECNOVISION</h1>

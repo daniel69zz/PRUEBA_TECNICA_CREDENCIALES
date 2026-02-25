@@ -21,9 +21,7 @@ import { useTheme } from "../contexts/ThemeContext";
 import toast from "react-hot-toast";
 import styled, { css } from "styled-components";
 
-// ─── Component ────────────────────────────────────────────────────────────────
-
-const CredentialList = () => {
+function CredentialList() {
   const [credentials, setCredentials] = useState([]);
   const [filteredCredentials, setFilteredCredentials] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -259,7 +257,7 @@ const CredentialList = () => {
       )}
     </ContainerFull>
   );
-};
+}
 
 export default CredentialList;
 
@@ -576,7 +574,6 @@ const actionBase = css`
     transform: translateY(-1px);
   }
 
-  /* Tooltip */
   &[data-tooltip]::after {
     content: attr(data-tooltip);
     position: absolute;

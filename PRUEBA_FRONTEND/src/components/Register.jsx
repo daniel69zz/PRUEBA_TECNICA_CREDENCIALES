@@ -7,7 +7,7 @@ import { getPasswordStrength } from "../utils/validation";
 import toast from "react-hot-toast";
 import styled from "styled-components";
 
-const Register = () => {
+function Register() {
   const navigate = useNavigate();
   const { register } = useAuth();
 
@@ -182,7 +182,6 @@ const Register = () => {
             )}
           </FormGroup>
 
-          {/* PASSWORD */}
           <FormGroup
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -237,7 +236,6 @@ const Register = () => {
             )}
           </FormGroup>
 
-          {/* CONFIRM PASSWORD */}
           <FormGroup
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -313,7 +311,7 @@ const Register = () => {
       </Card>
     </Wrapper>
   );
-};
+}
 
 export default Register;
 

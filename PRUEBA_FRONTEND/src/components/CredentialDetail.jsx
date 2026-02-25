@@ -14,6 +14,161 @@ import {
 } from "lucide-react";
 import styled from "styled-components";
 
+function CredentialDetail() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [credential, setCredential] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [password, setPassword] = useState(null);
+  const [loadingPassword, setLoadingPassword] = useState(false);
+
+  useEffect(() => {
+    loadCredential();
+  }, [id]);
+
+  const loadCredential = async () => {
+    try {
+      setLoading(true);
+      const data = await api2.getCredentialById(id);
+      setCredential(data);
+    } catch (err) {
+      setError("Error al cargar la credencial");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleTogglePassword = async () => {
+    if (!showPassword && !password) {
+      try {
+        setLoadingPassword(true);
+        const data = await api2.getPassword(id);
+        setPassword(data.password);
+      } catch (err) {
+        setError("Error al revelar la contraseña");
+        return;
+      } finally {
+        setLoadingPassword(false);
+      }
+    }
+    setShowPassword((prev) => !prev);
+  };
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleString();
+  };
+
+  if (loading)
+    return (
+      <LoadingContainer>
+        <Spinner />
+        <LoadingText>Cargando detalle...</LoadingText>
+      </LoadingContainer>
+    );
+
+  if (error) return <ErrorMessage>{error}</ErrorMessage>;
+  if (!credential) return <ErrorMessage>Credencial no encontrada</ErrorMessage>;
+
+  return (
+    <Container>
+      <Card>
+        <Header>
+          <BackButton onClick={() => navigate("/")}>
+            <ArrowLeft size={16} />
+          </BackButton>
+          <h1>Detalle de Credencial</h1>
+        </Header>
+
+        {error && <ErrorMessage>{error}</ErrorMessage>}
+
+        <FieldsWrapper>
+          <FormGroup>
+            <label>Servicio</label>
+            <FieldBox>
+              <Globe size={20} color="var(--primary)" />
+              <ServiceText>{credential.service_name}</ServiceText>
+            </FieldBox>
+          </FormGroup>
+
+          <FormGroup>
+            <label>Usuario/Email</label>
+            <FieldBox>
+              <Mail size={20} color="var(--primary)" />
+              <FieldText>{credential.account_username}</FieldText>
+            </FieldBox>
+          </FormGroup>
+
+          <FormGroup>
+            <label>Contraseña</label>
+            <FieldBox>
+              <Key size={20} color="var(--primary)" />
+              <PasswordText>
+                {showPassword && password ? password : "•".repeat(8)}
+              </PasswordText>
+              <TogglePasswordButton
+                type="button"
+                onClick={handleTogglePassword}
+                disabled={loadingPassword}
+              >
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </TogglePasswordButton>
+            </FieldBox>
+          </FormGroup>
+
+          {credential.url && (
+            <FormGroup>
+              <label>URL</label>
+              <FieldBox>
+                <Globe size={20} color="var(--primary)" />
+                <UrlLink
+                  href={credential.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {credential.url}
+                </UrlLink>
+              </FieldBox>
+            </FormGroup>
+          )}
+
+          {credential.notes && (
+            <FormGroup>
+              <label>Notas</label>
+              <FieldBox alignStart>
+                <FileText
+                  size={20}
+                  color="var(--primary)"
+                  style={{ marginTop: "2px" }}
+                />
+                <FieldText>{credential.notes}</FieldText>
+              </FieldBox>
+            </FormGroup>
+          )}
+
+          <FormGroup>
+            <label>Fecha de creación</label>
+            <FieldBox>
+              <Clock size={20} color="var(--gray)" />
+              <GrayText>{formatDate(credential.created_at)}</GrayText>
+            </FieldBox>
+          </FormGroup>
+        </FieldsWrapper>
+
+        <ButtonGroup>
+          <EditButton onClick={() => navigate(`/credentials/${id}`)}>
+            <Edit size={16} />
+            Editar
+          </EditButton>
+        </ButtonGroup>
+      </Card>
+    </Container>
+  );
+}
+
+export default CredentialDetail;
+
 // ─── Styled Components ────────────────────────────────────────────────────────
 
 const Container = styled.div`
@@ -205,163 +360,3 @@ const ErrorMessage = styled.div`
   padding: 0.75rem 1rem;
   font-size: 0.95rem;
 `;
-
-// ─── Component ────────────────────────────────────────────────────────────────
-
-const CredentialDetail = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const [credential, setCredential] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [password, setPassword] = useState(null);
-  const [loadingPassword, setLoadingPassword] = useState(false);
-
-  useEffect(() => {
-    loadCredential();
-  }, [id]);
-
-  const loadCredential = async () => {
-    try {
-      setLoading(true);
-      const data = await api2.getCredentialById(id);
-      setCredential(data);
-    } catch (err) {
-      setError("Error al cargar la credencial");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleTogglePassword = async () => {
-    if (!showPassword && !password) {
-      try {
-        setLoadingPassword(true);
-        const data = await api2.getPassword(id); // GET /credentials/:id/password
-        setPassword(data.password);
-      } catch (err) {
-        setError("Error al revelar la contraseña");
-        return;
-      } finally {
-        setLoadingPassword(false);
-      }
-    }
-    setShowPassword((prev) => !prev);
-  };
-
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleString();
-  };
-
-  if (loading)
-    return (
-      <LoadingContainer>
-        <Spinner />
-        <LoadingText>Cargando detalle...</LoadingText>
-      </LoadingContainer>
-    );
-
-  if (error) return <ErrorMessage>{error}</ErrorMessage>;
-  if (!credential) return <ErrorMessage>Credencial no encontrada</ErrorMessage>;
-
-  return (
-    <Container>
-      <Card>
-        <Header>
-          <BackButton onClick={() => navigate("/")}>
-            <ArrowLeft size={16} />
-          </BackButton>
-          <h1>Detalle de Credencial</h1>
-        </Header>
-
-        {error && <ErrorMessage>{error}</ErrorMessage>}
-
-        <FieldsWrapper>
-          <FormGroup>
-            <label>Servicio</label>
-            <FieldBox>
-              <Globe size={20} color="var(--primary)" />
-              <ServiceText>{credential.service_name}</ServiceText>
-            </FieldBox>
-          </FormGroup>
-
-          {/* Usuario */}
-          <FormGroup>
-            <label>Usuario/Email</label>
-            <FieldBox>
-              <Mail size={20} color="var(--primary)" />
-              <FieldText>{credential.account_username}</FieldText>
-            </FieldBox>
-          </FormGroup>
-
-          {/* Contraseña */}
-          <FormGroup>
-            <label>Contraseña</label>
-            <FieldBox>
-              <Key size={20} color="var(--primary)" />
-              <PasswordText>
-                {showPassword && password ? password : "•".repeat(8)}
-              </PasswordText>
-              <TogglePasswordButton
-                type="button"
-                onClick={handleTogglePassword}
-                disabled={loadingPassword}
-              >
-                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-              </TogglePasswordButton>
-            </FieldBox>
-          </FormGroup>
-
-          {/* URL */}
-          {credential.url && (
-            <FormGroup>
-              <label>URL</label>
-              <FieldBox>
-                <Globe size={20} color="var(--primary)" />
-                <UrlLink
-                  href={credential.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {credential.url}
-                </UrlLink>
-              </FieldBox>
-            </FormGroup>
-          )}
-
-          {credential.notes && (
-            <FormGroup>
-              <label>Notas</label>
-              <FieldBox alignStart>
-                <FileText
-                  size={20}
-                  color="var(--primary)"
-                  style={{ marginTop: "2px" }}
-                />
-                <FieldText>{credential.notes}</FieldText>
-              </FieldBox>
-            </FormGroup>
-          )}
-
-          <FormGroup>
-            <label>Fecha de creación</label>
-            <FieldBox>
-              <Clock size={20} color="var(--gray)" />
-              <GrayText>{formatDate(credential.created_at)}</GrayText>
-            </FieldBox>
-          </FormGroup>
-        </FieldsWrapper>
-
-        <ButtonGroup>
-          <EditButton onClick={() => navigate(`/credentials/${id}`)}>
-            <Edit size={16} />
-            Editar
-          </EditButton>
-        </ButtonGroup>
-      </Card>
-    </Container>
-  );
-};
-
-export default CredentialDetail;
