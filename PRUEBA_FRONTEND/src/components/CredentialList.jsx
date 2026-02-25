@@ -79,13 +79,13 @@ const CredentialList = () => {
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const now = new Date();
-    const diffDays = Math.ceil(Math.abs(now - date) / (1000 * 60 * 60 * 24));
+    const diffDays = Math.floor(Math.abs(now - date) / (1000 * 60 * 60 * 24));
+
     if (diffDays === 0) return "Hoy";
     if (diffDays === 1) return "Ayer";
     if (diffDays < 7) return `Hace ${diffDays} días`;
     return date.toLocaleDateString();
   };
-
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
@@ -189,9 +189,9 @@ const CredentialList = () => {
           transition={{ delay: 0.3 }}
         >
           <AnimatePresence>
-            {filteredCredentials.map((cred, index) => (
+            {filteredCredentials.map((cred) => (
               <CredentialCard
-                key={index}
+                key={cred.id_credential}
                 variants={itemVariants}
                 exit={{ opacity: 0, scale: 0.9 }}
                 whileHover={{ y: -5 }}
@@ -206,7 +206,7 @@ const CredentialList = () => {
 
                 <UsernameRow>
                   <Mail size={16} />
-                  {cred.accountUsername}
+                  {cred.account_username}
                 </UsernameRow>
 
                 {cred.url && (
@@ -229,7 +229,7 @@ const CredentialList = () => {
 
                 <ActionsRow>
                   <ActionLink
-                    to={`/credentials/${cred.id_credential}`}
+                    to={`/credentials_det/${cred.id_credential}`}
                     $variant="view"
                     data-tooltip="Ver detalles"
                   >
@@ -249,7 +249,7 @@ const CredentialList = () => {
                     $variant="delete"
                     data-tooltip="Eliminar"
                   >
-                    <Trash2 size={18} />
+                    <Trash2 size={20} color="red" />
                   </ActionButton>
                 </ActionsRow>
               </CredentialCard>
@@ -528,6 +528,9 @@ const PasswordMask = styled.span`
 const ActionsRow = styled.div`
   display: flex;
   gap: 0.5rem;
+  align-items: center;
+  min-height: 36px;
+  overflow: visible;
 `;
 
 const actionVariantStyles = {

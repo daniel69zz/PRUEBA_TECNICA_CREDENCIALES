@@ -38,8 +38,8 @@ function CredentialForm() {
       setLoading(true);
       const data = await api2.getCredentialById(id);
       setFormData({
-        serviceName: data.serviceName || "",
-        accountUsername: data.accountUsername || "",
+        serviceName: data.service_name || "",
+        accountUsername: data.account_username || "",
         password: data.password || "",
         url: data.url || "",
         notes: data.notes || "",
@@ -150,7 +150,6 @@ function CredentialForm() {
             )}
           </FormGroup>
 
-          {/* Usuario */}
           <FormGroup>
             <Label htmlFor="accountUsername">
               Usuario/Email del servicio *

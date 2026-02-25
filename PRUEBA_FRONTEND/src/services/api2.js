@@ -30,7 +30,8 @@ export const api2 = {
         Authorization: getToken(),
       },
       body: JSON.stringify({
-        service_name: formData.serviceName, // ← mapeo frontend → backend
+        service_name: formData.serviceName,
+        account_username: formData.accountUsername,
         password: formData.password,
         url: formData.url || null,
         notes: formData.notes || null,

@@ -6,6 +6,8 @@ import { LogIn, Mail, Lock, Key } from "lucide-react";
 import toast from "react-hot-toast";
 import styled from "styled-components";
 
+import logo from "/logo_key_sn.png";
+
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -55,9 +57,10 @@ function Login() {
             animate={{ scale: 1 }}
             transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
           >
-            <Key size={64} color="#8b5cf6" />
+            {/* <Key size={64} color="#8b5cf6" /> */}
+            <img src={logo} alt="logo" />
           </IconWrapper>
-          <h1>Mini Vault</h1>
+          <h1>TECNOVISION</h1>
           <p>Tu agenda segura de contraseñas</p>
         </Header>
 
@@ -135,14 +138,6 @@ function Login() {
         </form>
 
         <Footer>
-          <DemoText
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6 }}
-          >
-            <strong>Demo:</strong> demo@example.com / 123456
-          </DemoText>
-
           <RegisterSection
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -219,6 +214,11 @@ const IconWrapper = styled(motion.div)`
   display: flex;
   justify-content: center;
   margin-bottom: 1rem;
+
+  img {
+    height: 140px;
+    transform: rotate(320deg);
+  }
 `;
 
 const ErrorMessage = styled(motion.div)`

@@ -13,10 +13,18 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  // ✅ CAMBIO: inicializa leyendo localStorage directamente
+  const [user, setUser] = useState(() => {
+    const storedUser = localStorage.getItem("user");
+    const storedToken = localStorage.getItem("token");
+    if (storedUser && storedToken) {
+      return JSON.parse(storedUser);
+    }
+    return null;
+  });
+
   const [loading, setLoading] = useState(false);
 
-  // LOGIN
   const login = async (email, password) => {
     setLoading(true);
     try {
@@ -34,7 +42,6 @@ export const AuthProvider = ({ children }) => {
 
       localStorage.setItem("token", data.token);
 
-      // Decodifica el token para obtener el id_user
       const payload = JSON.parse(atob(data.token.split(".")[1]));
       const userData = {
         id_user: payload.id_user,
@@ -52,7 +59,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // REGISTER —
   const register = async (userData) => {
     setLoading(true);
     try {
@@ -62,7 +68,6 @@ export const AuthProvider = ({ children }) => {
         body: JSON.stringify({
           email: userData.email,
           password: userData.password,
-          // ← name no se envía
         }),
       });
 
@@ -80,21 +85,13 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // LOGOUT — limpia el token y el usuario
   const logout = () => {
     setUser(null);
     localStorage.removeItem("user");
     localStorage.removeItem("token");
   };
 
-  // Verificar si hay usuario en localStorage al iniciar
-  React.useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    const storedToken = localStorage.getItem("token");
-    if (storedUser && storedToken) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, []);
+  // ✅ useEffect eliminado, ya no hace falta
 
   const value = {
     user,

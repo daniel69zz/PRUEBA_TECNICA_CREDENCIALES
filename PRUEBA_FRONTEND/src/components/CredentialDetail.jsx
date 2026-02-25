@@ -278,7 +278,6 @@ const CredentialDetail = () => {
         {error && <ErrorMessage>{error}</ErrorMessage>}
 
         <FieldsWrapper>
-          {/* Servicio */}
           <FormGroup>
             <label>Servicio</label>
             <FieldBox>
@@ -331,7 +330,6 @@ const CredentialDetail = () => {
             </FormGroup>
           )}
 
-          {/* Notas */}
           {credential.notes && (
             <FormGroup>
               <label>Notas</label>
@@ -346,7 +344,6 @@ const CredentialDetail = () => {
             </FormGroup>
           )}
 
-          {/* Fecha de creación */}
           <FormGroup>
             <label>Fecha de creación</label>
             <FieldBox>

@@ -38,7 +38,7 @@ function AppRoutes() {
           }
         />
         <Route
-          path="/credentials/:id"
+          path="/credentials_det/:id"
           element={
             <PrivateRoute>
               <CredentialDetail />
